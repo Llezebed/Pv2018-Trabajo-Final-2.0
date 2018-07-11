@@ -26,14 +26,14 @@
                                          var="cadaButaca"
                                          emptyMessage="No hay perfiles en la base de datos">
                                 <p:column headerText="Sala">
-                                    <p:outputLabel value="#{cadaButaca.butSala}"/>
+                                    <p:outputLabel value="#{cadaButaca}"/>
                                 </p:column>
                                 <p:column headerText="Identificador">
                                     <p:outputLabel value="#{cadaButaca.butIdentificador}"/>
                                 </p:column>
                                 <p:column headerText="Edicion">
                                     <p:commandButton icon="ui-icon-pencil"
-                                                     oncomplete="PF('modificarBuitaca').show()"
+                                                     oncomplete="PF('modificarButaca').show()"
                                                      update=":frmModificarClasificacion"
                                                      actionListener="#{ButacaFormBean.establecerButaca(cadaButaca)}"/>
                                     <p:commandButton icon="ui-icon-trash"
@@ -58,7 +58,7 @@
                             <p:inputText id="txtNombreClas" value="#{butacaFormBean.sala}" required="true"/>
                             <p:commandButton id ="btnAgregarButaca" value="Agregar"
                                              actionListener="#{butacaFormBean.agregarButaca()}"
-                                             update=":frmButaca :mensajesAltaButaca"
+                                             update=":frmButacas :mensajesAltaButaca"
                                              oncomplete="PF('agregarButaca').hide()">
                                 <p:confirm header="Pedido de Confirmacion"
                                            message="¿Confirma Agregar Butaca?"
@@ -84,7 +84,7 @@
                                          value="#{butacaFormBean.unaButaca.butSala}"/>
                             <p:commandButton id="btnModificarButaca" value="Modificar"
                                              oncomplete="PF('modificarButaca').hide()"
-                                             update=":frmButaca"
+                                             update=":frmButacas"
                                              actionListener="#{butacaFormBean.modificarButaca()}">
                                 <p:confirm header="Pedido de Confirmacion"
                                            message="¿Confirma Modificar su Butaca?"
@@ -110,7 +110,7 @@
                             <p:commandButton id="btnEliminarClasificacion" value="Eliminar"
                                              actionListener="#{butacaFormBean.eliminarButaca()}"
                                              oncomplete="PF('eliminarButaca').hide()"
-                                             update=":frmButaca">
+                                             update=":frmButacas">
                                 <p:confirm header="Pedido de Confirmacion"
                                            message="¿Confirma Eliminar Butaca?"
                                            icon="ui-icon-alert"/>
