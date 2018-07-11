@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="./templates/template.xhtml">
+            <ui:insert name="top" id="top"/>
+                 <div id="top"/>
+                 
+            <ui:define name="content">
+                <p:panel id="pnlDirectores" header="Directores" >
+                    <h:form id="frmDirectores">
+                        <p:panelGrid id="tblBotones" columns="2">
+                            <p:commandButton id="btnAgregarDirector" value="Agregar" 
+                                             
+                                             update="tblMuestraDirectores"/>
+                            <p:commandButton id="btnBuscarDirector" value="Buscar" 
+                                           
+                                             update="tblMuestraDirectores"/>
+                        </p:panelGrid>
+                        <h:panelGrid id="tblMuestraDirectores" columns="5">
+                            <p:dataTable id="dtTblDirectores" value="#{directorFormBean.directorEncontrados}" var="cadaDire" emptyMessage="No hay perfiles en la base de datos">
+                                <p:column headerText="Apellido">
+                                    <p:outputLabel value="#{cadaDire.dirApellidos}"/>
+                                </p:column>
+                                <p:column headerText="Nombre">
+                                    <p:outputLabel value="#{cadaDire.dirNombres}"/>
+                                </p:column>
+                                
+                                <p:column headerText="Edicion">
+                                    <p:commandButton icon="ui-icon-pencil" 
+                                                     oncomplete="PF('modificarPerfil').show()"
+                                                     update=":frmModificarDire" 
+                                                     actionListener="#{directorFormBean}"/>
+                                    <p:commandButton icon="ui-icon-pencil" 
+                                                     oncomplete="PF('eliminarPerfil').show" 
+                                                     update=":frmEliminarPerfil" 
+                                                     actionListener="#{perfilFormBean.establecerPerfil(cadaDire)}"/>
+                               
+                                </p:column>
+                            </p:dataTable>
+                            
+                        </h:panelGrid>
+                    </h:form>
+                </p:panel>
+                <p:dialog id="dlgAltaDirectores" 
+                          widgetVar="agregarDirector"
+                          header="Alta de Directores" 
+                          resizable="false" 
+                          showEffect="explode" 
+                          hideEffect="esplode" modal="true">
+                    <p:growl id="mensajesAltaDirectores" showDetail="false" showSummary="true"/>
+                    <h:form id="frmAltaDIrector">
+                        <p:panelGrid id="tblAltaDirector" columns="2">
+                            <p:outputLabel for="txtNombreDire" value="Nombre: "/>
+                            <p:inputText id="txtNombreDire" value="#{directorFormBean.nombre}"  required="true"/>
+                            <p:outputLabel for="apDire" value="Apellido"/>
+                            <p:inputText id="apDire" value="#{directorFormBean.apellido}" required="true"/>
+                      
+                            <p:commandButton id="btnAgregarUsuario" value="Agregar" >
+                                <p:confirm header="Pedido de confirmacion" message="¿Confirma Agregar Perfil?" icon="ui-icon-alert"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnCerrarAltaPerfil" value="Salir" oncomplete="PF(´agregarPerfil´).hide()"/>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+                <p:dialog id="dlgModificarDire" widgetVar="modificarPerfil" header="Modficacion de Director" resizable="false" showEffect="explode" hideEffect="explode" modal="true">
+                    <h:form id="frmModificarDire">
+                        <p:outputLabel for="nombre" value="Nombre: "/>
+                        <p:inputText id="nombre" required="true" value="#{directorFormBean.unDirector}"/>
+                        <p:outputLabel for="aplellido" value="Apellido: "/>
+                        <p:inputText id="apellido" required="true" value="#{perfilFormBean.unPerfil.perApellidos}"/>
+         
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

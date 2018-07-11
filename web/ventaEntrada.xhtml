@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Venta</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="./templates/template.xhtml">
+            <ui:define name="content">
+                <p:panel id="pnlVentaEntrada" header="Venta de Entrada" rendered="#{loginFormBean.verificarSesion()}">
+                    <h:form id="frmVentaEntrada">
+                        <p:growl id="mensaje" showDetail="true"/>
+                        <p:panelGrid id="tblBotones" columns="2">
+                            <p:commandButton id="btnVentaEntrada"
+                                             value="Venta Entrada"
+                                             oncomplete="PF('ventaEntrada').show()"
+                                             update="tblMuestraVentaEntrada"/>
+                            <p:commandButton id="btnCancelarVenta" value="Cancelar Venta"/>
+                        </p:panelGrid>
+                        
+                        <h:panelGrid id="tblMuestraVentaEntrada" columns="6">
+                            <p:dataTable id="dtTblCartelera" filteredValue="#{carteleraFormBean.carteleraFiltradas}"
+                                         value="#{carteleraFormBean.cartelerasEncontradas}"
+                                         var="cadaCartelera"
+                                         emptyMessage="No hay carteleras en la base de datos">
+                                <p:column headerText="Codigo">
+                                    <p:outputLabel value="#{cadaCartelera.carCodigo}"/>
+                                </p:column>
+                                <p:column filterBy="#{cadaCartelera.peliculas.pelNombre}" headerText="Nombre" filterMatchMode="contains">
+                                    <p:outputLabel value="#{cadaCartelera.peliculas.pelNombre}"/>
+                                </p:column>
+                                <p:column headerText="Horario">
+                                    <p:outputLabel value=""/>
+                                </p:column>
+                                <p:column headerText="Fecha">
+                                    <p:outputLabel value=""/>
+                                </p:column>
+                                <p:column headerText="Sala">
+                                    <p:outputLabel value=""/>
+                                </p:column>
+                                <p:column headerText="Edicion">
+                                    <p:commandButton icon="ui-icon-pencil"
+                                                     oncomplete="PF('modificarCartelera').show()"
+                                                     update=":frmModificarCartelera"
+                                                     actionListener="#{ventaEntradasFormBean.establecerVenta(cadaVenta)}"/>
+                                    <p:commandButton icon="ui-icon-trash"
+                                                     oncomplete="PF('eliminarCartelera').show()"
+                                                     update=":frmEliminarCartelera"
+                                                     actionListener="#{ventaEntradasFormBean.establecerVenta(cadaVenta)}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </h:form>
+                </p:panel>
+                
+                
+                <p:dialog id="dlgVentaEntrada" widgetVar="ventaEntrada"
+                          header="Venta de Entrada" resizable="false"
+                          showEffect="slide" hideEffect="explode"
+                          modal="true">
+                    <p:growl id="mensajesVentaEntrada" showDetail="true" showSummary="true"/>
+                    <h:form id="frmVentaEntrada">
+                        <p:panelGrid id="tblVentaEntrada" columns="2">
+                            <p:accordionPanel id="carteleraDia" value="" var="pel">
+                                <p:tab title="Peli: #{pel.peliculas.pelNobre}" disabled="#{ventaEntradasFormBean.act1}">
+                                    <h:panelGrid columns="2" cellpadding="10">
+                                        <f:facet name="header">
+                                            <p:graphicImage url="/resources/images/fondo.jpg" alt="nueva"
+                                                            width="80px" height="80px"/>
+                                        </f:facet>
+                                        <p:outputLabel value="Descripcion:" style="font-weight: bold"/>
+                                        <p:outputLabel value="#{pel.peliculas.pelDescripcion}"/>
+                                        <p:commandButton icon="ui-icon-check" update=":frmVentaEntrada"
+                                                         actionListener="#{ventaEntradasFormBean.establecerPelicula(peli)}"/>
+                                    </h:panelGrid>
+                                </p:tab>
+                            </p:accordionPanel>
+                            <p:outputLabel for="txtHora" value="Horario:"/>
+                            <p:selectOneMenu id="txtHora" value="#{ventaEntradasFormBean.establecerPelicula(peli)}" required="true" 
+                                             converter="omnifaces.SelectItemsConverter" disabled="#{ventaEntradasFormBean.act2}">
+                                <p:ajax listener="#{ventaEntradasFormBean.cambiarPrecio()}" update=":fmrVentaEntrada"/>
+                                <f:selectItem itemLabel="Seleccione Horario" itemValue="#{null}"
+                                              noSelectionOption="true"/>
+                                <f:selectItems value="#{ventaEntradasFormBean.carteleras}"
+                                               var="peli"
+                                               itemLabel="#{peli.carHorario}"
+                                               itemValue="#{peli.carHorario}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel for="txtPrecio" value="Precio"/>
+                            <p:selectOneMenu id="txtPrecio" value="#{ventaEntradasFormBean.precio}" required="true"
+                                             converter="omnifaces.SelectItemsConverter" disabled="#{ventaEntradasFormBean.act3}">
+                                <p:ajax listener="#{ventaEntradasFormBean.seleccionarButaca()}" update=":frmVentaEntrada"/>
+                                <f:selectItem itemLabel="Seleccione Precio" itemValue="#{null}"
+                                              noSelectionOption="true"/>
+                                <f:selectItems value="#{ventaEntradasFormBean.carteleras}"
+                                               var="peli"
+                                               itemLabel="#{peli.carPrecio}"
+                                               itemValue="#{peli.carPrecio}"/>             
+                            </p:selectOneMenu>
+                            <p:outputLabel id="lblBuracaSeleccionada" value="Butaca:"/>
+                            <p:outputLabel id="txtButacaSeleccionada"
+                                           value=""/>
+                            <p:commandButton id ="btnComprarEntrada" value="Comprar"
+                                             actionListener="#{ventaEntradasFormBean.comrarEntrada()}"
+                                             update=":frmVentaEntrada :mensajesVentaEntrada"
+                                             oncomplete="PF('ventaEntrada').hide()">
+                                <p:confirm header="Pedido de Confirmacion"
+                                           message="¿Confirma la venta?"
+                                           icon="ui-icon-alert"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnCerrarCompraEntrada"
+                                             value="Salir"
+                                             oncomplete="PF('ventaEntrada').hide()"/>             
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+                
+                <p:dialog id="dlgSeleccionButaca" widgetVar="seleccionButaca"
+                          header="Seleccion de butaca" resizable="false"
+                          showEffect="slide" hideEffect="explode" modal="true">
+                    <h:form id="frmSeleccionButaca">
+                        <p:panelGrid>
+                            <p:commandButton id="btnSeleccionButaca" value="Reservar"
+                                             update=":frmVentaEntrada:txtButacaSeleccionada"
+                                             actionListener="#{ventaEntradasFormBean.reservarEntrada()}"
+                                             oncomplete="PF('seleccionButaca).hide()"/>
+                            <p:commandButton id="btnCerrarSeleccionBuraca"
+                                             value="Salir"
+                                             oncomplete="PF('seleccionButaca').hide()"/>
+                        </p:panelGrid>
+                        <p:panelGrid>
+                            <p:dataGrid columns="5" id="tblButacasA" rendered="#{ventaEntradasFormBean.definirSala() eq 1}"
+                                        value="#{ventaEntradasFormBean.butacaA}"
+                                        var="but">
+                                <p:commandLink update="img"
+                                               actionListener="#{ventaEntradasFormBean.reservarButaca(but.butIdentificador)}">
+                                    <p:graphicImage id="img"
+                                                    value="/resources/images/#{ventaEntradasFormBean.imagenBut}"
+                                                    width="40px" height="40px"/>
+                                </p:commandLink>
+                            </p:dataGrid>
+                            <p:dataGrid columns="5" id="tblButacasB" rendered="#{ventaEntradasFormBean.definirSala() eq 4}"
+                                        value="#{ventaEntradasFormBean.butacaB}"
+                                        var="but">
+                                <p:commandLink update="img"
+                                               actionListener="#{ventaEntradasFormBean.reservarButaca(but.butIdentificador)}">
+                                    <p:graphicImage id="img"
+                                                    value="/resources/images/#{ventaEntradasFormBean.imagenBut}"
+                                                    width="40px" height="40px"/>
+                                </p:commandLink>
+                            </p:dataGrid>
+                        </p:panelGrid>
+                    </h:form>          
+                </p:dialog>
+                
+                <p:dialog id="dlgModificarClasificacion"
+                          widgetVar="modificarClasificacion"
+                          header="Modificacion de Clasificacion"
+                          resizable="false"
+                          showEffect="slide"
+                          hideEffect="explode" modal="true">
+                    <h:form id="frmModificarClasificacion">
+                        <h:panelGrid id="pnlModificarClasificacion" columns="2">
+                            <p:outputLabel for="descripcion" value="Descripcion: "/>
+                            <p:inputText id="descripcion" required="true"
+                                         value="#{clasificacionFormBean.unaClasificacion.claDescripcion}"/>
+                            <p:commandButton id="btnModificarClasificacion" value="Modificar"
+                                             oncomplete="PF('modificarClasificacion').hide()"
+                                             update=":frmClasificacion"
+                                             actionListener="#{clasificacionFormBean.modificarClasificacion()}">
+                                <p:confirm header="Pedido de Confirmacion"
+                                           message="¿Confirma Modificar Clasificacion?"
+                                           icon="ui-icon-alert"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnCerrarModificarClasificacion"
+                                             value="Salir"
+                                             oncomplete="PF('modificarClasificacion').hide()"/>
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+                <p:dialog id="dlgEliminarClasificacion"
+                          widgetVar="eliminarClasificacion"
+                          header="Eliminacion de Clasificacion"
+                          resizable="false"
+                          showEffect="slide"
+                          hideEffect="explode" modal="true">
+                    <h:form id="frmEliminarClasificacion">
+                        <h:panelGrid id="pnlEliminarClasificacion" columns="2">
+                            <p:outputLabel for="descripcion" value="Descripcion: "/>
+                            <p:inputText id="descripcion" required="true"
+                                         value="#{clasificacionFormBean.unaClasificacion.claDescripcion}"/>
+                            <p:commandButton id="btnEliminarClasificacion" value="Eliminar"
+                                             actionListener="#{clasificacionFormBean.eliminarClasificacion()}"
+                                             oncomplete="PF('eliminarClasificacion').hide()"
+                                             update=":frmClasificacion">
+                                <p:confirm header="Pedido de Confirmacion"
+                                           message="¿Confirma Eliminar Clasificacion?"
+                                           icon="ui-icon-alert"/>
+                            </p:commandButton>
+                            <p:commandButton id="btnCerrarEliminarClasificacion"
+                                             value="Salir"
+                                             oncomplete="PF('eliminarClasificacion').hide()"/>
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+                
+                <p:confirmDialog id="confirmacionDialogoClasificacion"
+                                 global="true" showEffect="fade"
+                                 hideEffect="fade">
+                    <h:form id="frmConfirmacionOpercaionClasificacion">
+                        <p:commandButton value="SI" type="button"
+                                         styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="NO" type="button"
+                                         styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+                                         style="float: right;"/>
+                    </h:form>
+                </p:confirmDialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+
