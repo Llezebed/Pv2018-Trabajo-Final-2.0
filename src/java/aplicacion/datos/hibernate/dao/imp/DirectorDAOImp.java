@@ -37,5 +37,14 @@ public class DirectorDAOImp implements DirectorDAO{
         session.getTransaction().commit();
         session.close();
     }
+
+    @Override
+    public void modificar(Director unDirector) {
+        Session session = NewHibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        session.save(unDirector);
+        session.getTransaction().commit();
+        session.close();
+    }
     
 }

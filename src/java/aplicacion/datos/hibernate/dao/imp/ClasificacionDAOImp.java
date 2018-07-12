@@ -44,7 +44,7 @@ public class ClasificacionDAOImp implements ClasificacionDAO{
     public void modificar(Clasificacion unaClasificacion) {
         Session session = NewHibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        session.save(unaClasificacion);
+        session.update(unaClasificacion);
         session.getTransaction().commit();
         session.close();
     }

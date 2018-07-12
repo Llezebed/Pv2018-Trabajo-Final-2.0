@@ -41,6 +41,9 @@ public class ClasificacionFormBean {
     public void establecerClasificacion(Clasificacion clas){
         setUnaClasificacion(clas);
     }
+     public void dardeBajaClasificacion(Clasificacion clas){
+        setUnaClasificacion(clas);
+    }
     
     public void agregarClasificacion(){
         unaClasificacion = new Clasificacion(getDescripcion(),true);

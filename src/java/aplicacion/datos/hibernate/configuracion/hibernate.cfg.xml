@@ -6,7 +6,7 @@
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/cine?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">delfin</property>
+    <property name="hibernate.connection.password">lvp9908</property>
     <mapping resource="aplicacion/datos/hibernate/mapeos/Peliculas.hbm.xml"/>
     <mapping resource="aplicacion/datos/hibernate/mapeos/Directores.hbm.xml"/>
     <mapping resource="aplicacion/datos/hibernate/mapeos/Butacas.hbm.xml"/>

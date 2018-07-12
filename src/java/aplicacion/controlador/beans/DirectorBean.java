@@ -34,6 +34,9 @@ public class DirectorBean {
         return directorDAO.obtenertodos();
     }
     
-    
+     public void modificarDirector(Director unDirector){
+        DirectorDAO directorDAO = new DirectorDAOImp();
+        directorDAO.modificar(unDirector);
+    }
 }
 

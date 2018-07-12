@@ -7,9 +7,7 @@ package aplicacion.controlador.beans.forms;
 
 import aplicacion.controlador.beans.DirectorBean;
 import aplicacion.modelo.dominio.Director;
-import aplicacion.modelo.dominio.Perfil;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -41,6 +39,10 @@ public class DirectorFormBean implements Serializable{
     private void listarDirectores(){
         directorEncontrados = directorBean.listarDirectores();
     }
+    
+    public void establecerSala(Director dire){
+        setUnDirector(dire);
+    }
   public void agregarDirector(){
        unDirector = new Director(getApellido(),getNombre(),true);
         try{
@@ -54,6 +56,12 @@ public class DirectorFormBean implements Serializable{
             FacesMessage facesMessage=new FacesMessage(FacesMessage.SEVERITY_INFO,"Felicidades!","Un nuevo director ha sido agregrado con exito");
          FacesContext.getCurrentInstance().addMessage(null,facesMessage);
          listarDirectores();
+    }
+    
+   public void eliminarDirector(){
+        getUnDirector().setDirEstado(false);
+        directorBean.modificarDirector(getUnDirector());
+        listarDirectores();
     }
 
     /**

@@ -15,5 +15,5 @@ import java.util.List;
 public interface DirectorDAO {
     List<Director> obtenertodos();
     void agregar (Director unDirector);
-    
+    void modificar(Director unDirector);
 }
